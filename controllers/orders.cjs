@@ -1,6 +1,6 @@
 const jwt = require("jsonwebtoken");
 const ordersRouter = require("express").Router();
-const Order = require("../models/order");
+const Order = require("../models/order.cjs");
 
 const getTokenFrom = (request) => {
 	const authorization = request.get("authorization");

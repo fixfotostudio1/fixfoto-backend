@@ -1,8 +1,15 @@
 const mongoose = require("mongoose");
 
 const pricelistSchema = mongoose.Schema({
-	"Poster (Glanz)": String,
-	"Poster (Matt)": String,
+	passfotos: Object,
+	bewerbungsbilder: Object,
+	portraits: Object,
+	fotoprodukte: Object,
+	bilderrahmen: Object,
+	kopien: Object,
+	labor: Object,
+	videokassetten: Object,
+	glasfotos: Object,
 });
 
 pricelistSchema.set("toJSON", {

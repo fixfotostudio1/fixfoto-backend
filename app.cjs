@@ -1,19 +1,17 @@
-const config = require("./utils/config");
+const config = require("./utils/config.cjs");
 const express = require("express");
 const app = express();
 require("express-async-errors");
 const cors = require("cors");
-const ordersRouter = require("./controllers/orders");
-const loginRouter = require("./controllers/login");
-const pricesRouter = require("./controllers/prices");
+const ordersRouter = require("./controllers/orders.cjs");
+const loginRouter = require("./controllers/login.cjs");
+const pricelistRouter = require("./controllers/pricelist.cjs");
 
-const middleware = require("./utils/middleware");
-const logger = require("./utils/logger");
+const middleware = require("./utils/middleware.cjs");
+const logger = require("./utils/logger.cjs");
 const mongoose = require("mongoose");
 
 mongoose.set("strictQuery", false);
-
-logger.info("connecting to", config.MONGODB_URI);
 
 mongoose
 	.connect(config.MONGODB_URI)
@@ -25,13 +23,13 @@ mongoose
 	});
 
 app.use(cors());
-// app.use(express.static("dist"));
+
 app.use(express.json());
 app.use(middleware.requestLogger);
 
 app.use("/api/orders", ordersRouter);
 app.use("/api/login", loginRouter);
-app.use("/api/prices", pricesRouter);
+app.use("/api/pricelist", pricelistRouter);
 
 app.use(middleware.unknownEndpoint);
 app.use(middleware.errorHandler);

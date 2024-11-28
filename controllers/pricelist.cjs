@@ -1,6 +1,6 @@
 const jwt = require("jsonwebtoken");
-const pricesRouter = require("express").Router();
-const Pricelist = require("../models/pricelist");
+const pricelistRouter = require("express").Router();
+const Pricelist = require("../models/pricelist.cjs");
 
 const getTokenFrom = (request) => {
 	const authorization = request.get("authorization");
@@ -10,12 +10,13 @@ const getTokenFrom = (request) => {
 	return null;
 };
 
-pricesRouter.get("/", async (request, response) => {
+pricelistRouter.get("/", async (request, response) => {
 	const pricelist = await Pricelist.find({});
 	response.json(pricelist);
 });
 
-pricesRouter.put("/:id", (request, response, next) => {
+pricelistRouter.put("/:id", (request, response, next) => {
+	console.log("request: ", getTokenFrom(request));
 	const decodedToken = jwt.verify(getTokenFrom(request), process.env.SECRET);
 	if (!decodedToken.id) {
 		return response.status(401).json({ error: "token invalid" });
@@ -23,7 +24,17 @@ pricesRouter.put("/:id", (request, response, next) => {
 
 	const body = request.body;
 
-	const pricelist = body.pricelist;
+	const pricelist = {
+		passfotos: body.passfotos,
+		bewerbungsbilder: body.bewerbungsbilder,
+		portraits: body.portraits,
+		fotoprodukte: body.fotoprodukte,
+		bilderrahmen: body.bilderrahmen,
+		kopien: body.kopien,
+		labor: body.labor,
+		videokassetten: body.videokassetten,
+		glasfotos: body.glasfotos,
+	};
 
 	Pricelist.findByIdAndUpdate(request.params.id, pricelist, { new: true })
 		.then((updatedPricelist) => {
@@ -32,4 +43,4 @@ pricesRouter.put("/:id", (request, response, next) => {
 		.catch((error) => next(error));
 });
 
-module.exports = pricesRouter;
+module.exports = pricelistRouter;
