@@ -10,6 +10,7 @@ const pricelistSchema = mongoose.Schema({
 	labor: Object,
 	videokassetten: Object,
 	glasfotos: Object,
+	delivery: Object,
 });
 
 pricelistSchema.set("toJSON", {

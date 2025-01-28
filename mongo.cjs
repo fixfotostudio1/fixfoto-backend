@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 require("dotenv").config();
 
 const Pricelist = require("./models/pricelist.cjs");
+const Order = require("./models/order.cjs");
 
 const url = process.env.MONGODB_URI;
 
@@ -125,16 +126,57 @@ const pricelist = new Pricelist({
 		},
 	},
 	glasfotos: {},
+	delivery: { Abholen: 0.0, "Hermes-Versand": 4.99 },
 });
 
-/*
+const order = new Order({
+	deliveryAddress: {
+		firstName: "Dilara",
+		surname: "Sarach",
+		mobile: "+49 176 55292853",
+		email: "dilara.tsch@gmail.com",
+		street: "Muster-Str.",
+		houseNumber: "10",
+		ZIPCode: "60321",
+		city: "Frankfurt am Main",
+		country: "Germany",
+	},
+	items: [
+		{
+			articleType: "Kissendruck",
+			articleSubtype: "Verschiedene Farben",
+			imgUrl: "https://example.com/img",
+			copies: 1,
+			price: 25.0,
+		},
+		{
+			articleType: "Tassendruck",
+			articleSubtype: "Magic",
+			imgUrl: "https://example.com/img",
+			copies: 1,
+			price: 25.0,
+		},
+	],
+	deliveryType: "Hermes-Versand",
+	status: "neu",
+	datetime: "28-11-2024 14:19:00",
+	orderNumber: 1002,
+});
+
 pricelist.save().then((result) => {
-	console.log("pricelist saved!");
+	console.log("pricelist saved!", result);
 	mongoose.connection.close();
 });
 
-*/
+/*
+
 Pricelist.find({}).then((result) => {
 	console.log(result[0]);
 	mongoose.connection.close();
 });
+
+order.save().then((result) => {
+	console.log("order saved!");
+	mongoose.connection.close();
+});
+*/

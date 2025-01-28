@@ -2,10 +2,10 @@ const mongoose = require("mongoose");
 
 const orderSchema = new mongoose.Schema({
 	deliveryAddress: Object,
-	billingAddress: Object,
-	items: Object,
+	items: Array,
+	deliveryType: String,
 	status: String,
-	datetime: String,
+	orderNumber: String,
 });
 
 orderSchema.set("toJSON", {

@@ -16,7 +16,6 @@ pricelistRouter.get("/", async (request, response) => {
 });
 
 pricelistRouter.put("/:id", (request, response, next) => {
-	console.log("request: ", getTokenFrom(request));
 	const decodedToken = jwt.verify(getTokenFrom(request), process.env.SECRET);
 	if (!decodedToken.id) {
 		return response.status(401).json({ error: "token invalid" });

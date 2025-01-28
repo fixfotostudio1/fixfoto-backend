@@ -1,9 +1,23 @@
 require("dotenv").config();
 
 const PORT = process.env.PORT;
+const SECRET = process.env.SECRET;
 const MONGODB_URI = process.env.MONGODB_URI;
+const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY;
+const MAIL_USERNAME = process.env.MAIL_USERNAME;
+const MAIL_PASSWORD = process.env.MAIL_PASSWORD;
+const OAUTH_CLIENTID = process.env.OAUTH_CLIENTID;
+const OAUTH_CLIENT_SECRET = process.env.OAUTH_CLIENT_SECRET;
+const OAUTH_REFRESH_TOKEN = process.env.OAUTH_REFRESH_TOKEN;
 
 module.exports = {
 	MONGODB_URI,
 	PORT,
+	SECRET,
+	STRIPE_SECRET_KEY,
+	MAIL_USERNAME,
+	MAIL_PASSWORD,
+	OAUTH_CLIENTID,
+	OAUTH_CLIENT_SECRET,
+	OAUTH_REFRESH_TOKEN,
 };
