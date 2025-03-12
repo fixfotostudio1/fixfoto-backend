@@ -6,6 +6,7 @@ const orderSchema = new mongoose.Schema({
 	deliveryType: String,
 	status: String,
 	orderNumber: String,
+	intentId: String,
 });
 
 orderSchema.set("toJSON", {

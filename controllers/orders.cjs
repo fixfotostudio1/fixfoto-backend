@@ -5,6 +5,7 @@ const Pricelist = require("../models/pricelist.cjs");
 const config = require("../utils/config.cjs");
 const stripe = require("stripe")(config.STRIPE_SECRET_KEY);
 const nodemailer = require("nodemailer");
+const { Big } = require("bigdecimal.js");
 
 const getTokenFrom = (request) => {
 	const authorization = request.get("authorization");
@@ -26,6 +27,7 @@ ordersRouter.get("/", async (request, response) => {
 });
 
 ordersRouter.put("/:id", (request, response, next) => {
+	console.log("orders PUT: ", request.body);
 	const decodedToken = jwt.verify(getTokenFrom(request), config.SECRET);
 	if (!decodedToken.id) {
 		return response.status(401).json({ error: "token invalid" });
@@ -53,8 +55,6 @@ ordersRouter.put("/:id", (request, response, next) => {
 ordersRouter.post("/", async (request, response) => {
 	const body = request.body;
 
-	console.log("orders controller body: ", body);
-
 	const order = new Order({ ...body.order, status: "neu" });
 
 	const savedOrder = await order.save();
@@ -75,7 +75,7 @@ ordersRouter.post("/", async (request, response) => {
 		from: "dilara.tsch@gmail.com",
 		to: "dilara.tsch@gmail.com",
 		subject: "Nodemailer Project",
-		text: "Hi from your nodemailer project",
+		html: "<h1>Hi from your nodemailer project</h1>",
 	};
 
 	transporter.sendMail(mailOptions, (err, data) => {
@@ -92,19 +92,42 @@ ordersRouter.post("/", async (request, response) => {
 ordersRouter.post("/fetchClientSecret", async (request, response) => {
 	const body = request.body;
 
+	const n1 = Big("1.11");
+	const n2 = Big("1.11");
+	console.log(
+		"orders controller bigdec: ",
+		Number(n1.add(n2).multiply(100).toString())
+	);
+
 	const pricelists = await Pricelist.find({});
 	const pricelist = pricelists[0];
 
+	console.log(
+		"amount0: ",
+		Big(
+			pricelist[body.items[0]["supertype"]][body.items[0]["product"]][
+				body.items[0]["type"]
+			].toString()
+		)
+			.multiply(Big(body.items[0]["amount"].toString()))
+			.add(Big("0"))
+	);
 	let amount = body.items.reduce(
 		(acc, val) =>
-			pricelist[val["supertype"]][val["product"]][val["type"]] * val["amount"] +
-			acc,
-		0
+			Big(pricelist[val["supertype"]][val["product"]][val["type"]].toString())
+				.multiply(Big(val["amount"].toString()))
+				.add(acc),
+		Big("0")
+	);
+	const deliveryPrice = Big(
+		pricelist["delivery"][body.deliveryType].toString()
 	);
 
-	amount += pricelist["delivery"][body.deliveryType];
-	amount = Math.round((amount * 100) / 100);
-	amount *= 100;
+	console.log("amount1: ", amount);
+
+	amount = amount.add(deliveryPrice);
+	amount = amount.multiply(Big("100"));
+	amount = Number(amount);
 
 	console.log("amount: ", amount);
 
@@ -117,6 +140,17 @@ ordersRouter.post("/fetchClientSecret", async (request, response) => {
 	});
 
 	console.log("orders controller intent: ", intent);
+
+	response.json(intent).status(201);
+});
+
+ordersRouter.post("/cancelPaymentIntent", async (request, response) => {
+	const body = request.body;
+	let intentId = body.intentId;
+
+	const intent = await stripe.paymentIntents.cancel(intentId);
+
+	console.log("order cancelled");
 
 	response.json(intent).status(201);
 });
