@@ -55,7 +55,10 @@ ordersRouter.put("/:id", (request, response, next) => {
 ordersRouter.post("/", async (request, response) => {
 	const body = request.body;
 
-	const order = new Order({ ...body.order, status: "neu" });
+	const order = new Order({
+		...body.order,
+		status: body.order.orderSuccess === "pending" ? "unbezahlt" : "neu",
+	});
 
 	const savedOrder = await order.save();
 
