@@ -92,26 +92,10 @@ ordersRouter.post("/", async (request, response) => {
 ordersRouter.post("/fetchClientSecret", async (request, response) => {
 	const body = request.body;
 
-	const n1 = Big("1.11");
-	const n2 = Big("1.11");
-	console.log(
-		"orders controller bigdec: ",
-		Number(n1.add(n2).multiply(100).toString())
-	);
-
 	const pricelists = await Pricelist.find({});
 	const pricelist = pricelists[0];
+	console.log("orders controller: ", request.body);
 
-	console.log(
-		"amount0: ",
-		Big(
-			pricelist[body.items[0]["supertype"]][body.items[0]["product"]][
-				body.items[0]["type"]
-			].toString()
-		)
-			.multiply(Big(body.items[0]["amount"].toString()))
-			.add(Big("0"))
-	);
 	let amount = body.items.reduce(
 		(acc, val) =>
 			Big(pricelist[val["supertype"]][val["product"]][val["type"]].toString())
@@ -123,13 +107,9 @@ ordersRouter.post("/fetchClientSecret", async (request, response) => {
 		pricelist["delivery"][body.deliveryType].toString()
 	);
 
-	console.log("amount1: ", amount);
-
 	amount = amount.add(deliveryPrice);
 	amount = amount.multiply(Big("100"));
 	amount = Number(amount);
-
-	console.log("amount: ", amount);
 
 	const intent = await stripe.paymentIntents.create({
 		amount: amount,
@@ -138,8 +118,6 @@ ordersRouter.post("/fetchClientSecret", async (request, response) => {
 			enabled: true,
 		},
 	});
-
-	console.log("orders controller intent: ", intent);
 
 	response.json(intent).status(201);
 });
@@ -153,6 +131,29 @@ ordersRouter.post("/cancelPaymentIntent", async (request, response) => {
 	console.log("order cancelled");
 
 	response.json(intent).status(201);
+});
+
+ordersRouter.post("/refund", async (request, response) => {
+	const decodedToken = jwt.verify(getTokenFrom(request), config.SECRET);
+	if (!decodedToken.id) {
+		return response.status(401).json({ error: "token invalid" });
+	}
+
+	console.log(
+		"orders controller refund: ",
+		request.body,
+		request.body.intentId
+	);
+	const body = request.body;
+	let intentId = body.intentId;
+
+	const refund = await stripe.refunds.create({
+		payment_intent: intentId,
+	});
+
+	console.log("order refunded");
+
+	response.json(refund).status(201);
 });
 
 ordersRouter.get("/:id", async (request, response) => {
