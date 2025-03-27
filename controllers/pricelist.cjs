@@ -28,11 +28,11 @@ pricelistRouter.put("/:id", (request, response, next) => {
 		bewerbungsbilder: body.bewerbungsbilder,
 		portraits: body.portraits,
 		fotoprodukte: body.fotoprodukte,
-		bilderrahmen: body.bilderrahmen,
+		rahmen: body.rahmen,
 		kopien: body.kopien,
 		labor: body.labor,
 		videokassetten: body.videokassetten,
-		glasfotos: body.glasfotos,
+		delivery: body.delivery,
 	};
 
 	Pricelist.findByIdAndUpdate(request.params.id, pricelist, { new: true })

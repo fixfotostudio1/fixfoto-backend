@@ -5,7 +5,7 @@ const pricelistSchema = mongoose.Schema({
 	bewerbungsbilder: Object,
 	portraits: Object,
 	fotoprodukte: Object,
-	bilderrahmen: Object,
+	rahmen: Object,
 	kopien: Object,
 	labor: Object,
 	videokassetten: Object,
