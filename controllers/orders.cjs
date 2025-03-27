@@ -75,10 +75,10 @@ ordersRouter.post("/", async (request, response) => {
 	});
 
 	let mailOptions = {
-		from: "dilara.tsch@gmail.com",
-		to: "dilara.tsch@gmail.com",
-		subject: "Nodemailer Project",
-		html: "<h1>Hi from your nodemailer project</h1>",
+		from: "fixfotostudio1@gmail.com",
+		to: body.order.deliveryAddress["email"],
+		subject: `Ihre Bestellung ${body.order.orderNumber}`,
+		html: "<p>Liebe Kundin, lieber Kunde,</br></br>herzlichen Dank für Deine Bestellung. Wir kümmern uns umgehend darum und melden uns sobald sie abholbereit/versandt worden ist.</p>",
 	};
 
 	transporter.sendMail(mailOptions, (err, data) => {
