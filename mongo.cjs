@@ -14,6 +14,7 @@ const pricelist = new Pricelist({
 	passfotos: {
 		"4 biometrische Passbilder": "18.0",
 		"4 Passbilder USA, Indien, Israel, Canada": "23.0",
+		"e-Passbilder (digital)": "18.0",
 		"Speichern auf Medien, E-Mail senden": "5.0",
 	},
 	bewerbungsbilder: {
